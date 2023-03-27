@@ -41,7 +41,7 @@ condition: IDENTIFIER CONDITION IDENTIFIER |
 			NUMBER CONDITION NUMBER |
 			NUMBER CONDITION NUMBER ANDOR condition |
 			error {
-				yyerror(" : Incorrect statement for WHERE clause\n");			
+				yyerror(" : Incorrect statement for WHERE clause.\n");			
 				return 1;
 			}
 			;
