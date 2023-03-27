@@ -11,7 +11,11 @@ int yylex();
 %token UPDATE DELETE FROM IDENTIFIER SET ASSIGN WHERE ANDOR CONDITION SEMICOLON TEXT NUMBER COMMA NEWLINE;
 %%
 line:       line_up | 
-            line_del
+            line_del | 
+            error {
+                yyerror(" : Invalid Operation. \n               Only DELETE and UPDATE is allowed.\n");
+                return 1;
+            }
             ;
 line_up:    update { 
                 printf("Syntax Correct\n");
@@ -23,11 +27,7 @@ line_del:   delete {
                 return 0;
                 }
             ;
-delete:     DELETE from | 
-            error {     
-                    yyerror(" : MISSING KEYWORD \"DELETE\".\n");
-                    return 1;
-                }
+delete:     DELETE from
 	        ;
 
 from:       FROM table where | 
@@ -37,11 +37,7 @@ from:       FROM table where |
                     return 1;
                 }
 	        ;
-update:     UPDATE table set | 
-		    error { 
-                    yyerror(" : MISSING KEYWORD \"UPDATE\".\n");
-                    return 1;
-                }
+update:     UPDATE table set 
 		    ; 
 table:      IDENTIFIER | 
 		    error { 
