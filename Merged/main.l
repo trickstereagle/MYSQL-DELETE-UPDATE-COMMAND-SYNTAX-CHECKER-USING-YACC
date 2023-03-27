@@ -20,7 +20,7 @@
 ">"                                   return CONDITION;
 "<="                                  return CONDITION;
 ">="                                  return CONDITION;
-"=="                                  return CONDITION;
+"<>"                                  return CONDITION;
 "!="                                  return CONDITION;
 [a-zA-Z][a-zA-Z0-9_]*                 return IDENTIFIER;
 ","                                   return COMMA;
