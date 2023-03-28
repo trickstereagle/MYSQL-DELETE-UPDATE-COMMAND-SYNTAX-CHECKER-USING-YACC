@@ -5,15 +5,14 @@
 void yyerror (char *str);
 int yylex();
 
-
 %}
 
-%token UPDATE DELETE FROM IDENTIFIER SET ASSIGN WHERE ANDOR CONDITION SEMICOLON TEXT NUMBER COMMA NEWLINE;
+%token UPDATE DELETE FROM IDENTIFIER SET ASSIGN WHERE ANDOR CONDITION SEMICOLON TEXT NUMBER COMMA NEWLINE ;
 %%
 line:       line_up | 
-            line_del | 
+            line_del |
             error {
-                yyerror(" : Invalid Operation. \n               Only DELETE and UPDATE is allowed.\n");
+                yyerror(" : Invalid Operation. \n               Only DELETE and UPDATE operations are allowed.\n");
                 return 1;
             }
             ;
@@ -67,19 +66,21 @@ where:      WHERE condition semicolon NEWLINE |
                     return 1;
                 }
 		    ;
-condition:  IDENTIFIER CONDITION IDENTIFIER |
-			IDENTIFIER CONDITION TEXT |
-			IDENTIFIER CONDITION NUMBER |
-			IDENTIFIER CONDITION IDENTIFIER ANDOR condition |
-			IDENTIFIER CONDITION TEXT ANDOR condition |
-			IDENTIFIER CONDITION NUMBER ANDOR condition |
-			NUMBER CONDITION NUMBER |
-			NUMBER CONDITION NUMBER ANDOR condition |
+condition:  IDENTIFIER operator IDENTIFIER |
+			IDENTIFIER operator TEXT |
+			IDENTIFIER operator NUMBER |
+			IDENTIFIER operator IDENTIFIER ANDOR condition |
+			IDENTIFIER operator TEXT ANDOR condition |
+			IDENTIFIER operator NUMBER ANDOR condition |
+			NUMBER operator NUMBER |
+			NUMBER operator NUMBER ANDOR condition |
 			error {
 				    yyerror(" : Incorrect statement for WHERE clause\n");			
 				    return 1;
 			    }
 			;
+operator : CONDITION | ASSIGN 
+            ;
 semicolon:  SEMICOLON | 
             error {
                     yyerror(" : Missing Semicolon \";\"\n"); 
