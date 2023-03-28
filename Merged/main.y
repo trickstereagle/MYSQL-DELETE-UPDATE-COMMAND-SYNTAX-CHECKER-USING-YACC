@@ -79,7 +79,7 @@ condition:  IDENTIFIER operator IDENTIFIER |
 				    return 1;
 			    }
 			;
-operator : CONDITION | ASSIGN 
+operator :  CONDITION | ASSIGN 
             ;
 semicolon:  SEMICOLON | 
             error {
