@@ -155,3 +155,19 @@ int yywrap() {
 ## Test Cases
 <img src = "testcases/1.png">
 <img src = "testcases/2.png">
+
+## Limitations
+1. It does not handle conditions in parenthesis.
+```sql
+	DELETE FROM class WHERE (name = "XYZ");
+```
+```
+	Syntax Error : Incorrect statement for WHERE clause
+```
+2. It does not handle subqueries in condition.
+```sql
+	DELETE FROM class WHERE id IN (SELECT id FROM course);
+```
+```
+	Syntax Error : Incorrect statement for WHERE clause
+```
