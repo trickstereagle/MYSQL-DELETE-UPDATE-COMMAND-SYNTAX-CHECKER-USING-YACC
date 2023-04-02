@@ -119,6 +119,13 @@ Nonterminals, with rules where they appear
 State 0
 
     0 $accept: • line $end
+    1 line: • line_up
+    2     | • line_del
+    3     | • error
+    4 line_up: • update
+    5 line_del: • delete
+    6 delete: • DELETE from
+   10 update: • UPDATE table set
 
     error   shift, and go to state 1
     UPDATE  shift, and go to state 2
@@ -141,6 +148,8 @@ State 1
 State 2
 
    10 update: UPDATE • table set
+   11 table: • IDENTIFIER
+   12      | • error
 
     error       shift, and go to state 9
     IDENTIFIER  shift, and go to state 10
@@ -151,6 +160,9 @@ State 2
 State 3
 
     6 delete: DELETE • from
+    7 from: • FROM table where
+    8     | • FROM table semicolon NEWLINE
+    9     | • error
 
     error  shift, and go to state 12
     FROM   shift, and go to state 13
@@ -210,6 +222,9 @@ State 10
 State 11
 
    10 update: UPDATE table • set
+   13 set: • SET column where
+   14    | • SET column semicolon NEWLINE
+   15    | • error
 
     error  shift, and go to state 16
     SET    shift, and go to state 17
@@ -228,6 +243,8 @@ State 13
 
     7 from: FROM • table where
     8     | FROM • table semicolon NEWLINE
+   11 table: • IDENTIFIER
+   12      | • error
 
     error       shift, and go to state 9
     IDENTIFIER  shift, and go to state 10
@@ -260,6 +277,11 @@ State 17
 
    13 set: SET • column where
    14    | SET • column semicolon NEWLINE
+   16 column: • IDENTIFIER ASSIGN TEXT
+   17       | • IDENTIFIER ASSIGN NUMBER
+   18       | • IDENTIFIER ASSIGN TEXT COMMA column
+   19       | • IDENTIFIER ASSIGN NUMBER COMMA column
+   20       | • error
 
     error       shift, and go to state 20
     IDENTIFIER  shift, and go to state 21
@@ -278,6 +300,10 @@ State 19
 
     7 from: FROM table • where
     8     | FROM table • semicolon NEWLINE
+   21 where: • WHERE condition semicolon NEWLINE
+   22      | • error
+   34 semicolon: • SEMICOLON
+   35          | • error
 
     error      shift, and go to state 23
     WHERE      shift, and go to state 24
@@ -308,6 +334,10 @@ State 22
 
    13 set: SET column • where
    14    | SET column • semicolon NEWLINE
+   21 where: • WHERE condition semicolon NEWLINE
+   22      | • error
+   34 semicolon: • SEMICOLON
+   35          | • error
 
     error      shift, and go to state 23
     WHERE      shift, and go to state 24
@@ -319,8 +349,8 @@ State 22
 
 State 23
 
-   22 where: error •
-   35 semicolon: error •
+   22 where: error •  [$end]
+   35 semicolon: error •  [NEWLINE]
 
     NEWLINE   reduce using rule 35 (semicolon)
     $default  reduce using rule 22 (where)
@@ -329,6 +359,15 @@ State 23
 State 24
 
    21 where: WHERE • condition semicolon NEWLINE
+   23 condition: • IDENTIFIER operator IDENTIFIER
+   24          | • IDENTIFIER operator TEXT
+   25          | • IDENTIFIER operator NUMBER
+   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   27          | • IDENTIFIER operator TEXT ANDOR condition
+   28          | • IDENTIFIER operator NUMBER ANDOR condition
+   29          | • NUMBER operator NUMBER
+   30          | • NUMBER operator NUMBER ANDOR condition
+   31          | • error
 
     error       shift, and go to state 31
     IDENTIFIER  shift, and go to state 32
@@ -398,6 +437,8 @@ State 32
    26          | IDENTIFIER • operator IDENTIFIER ANDOR condition
    27          | IDENTIFIER • operator TEXT ANDOR condition
    28          | IDENTIFIER • operator NUMBER ANDOR condition
+   32 operator: • CONDITION
+   33         | • ASSIGN
 
     ASSIGN     shift, and go to state 39
     CONDITION  shift, and go to state 40
@@ -409,6 +450,8 @@ State 33
 
    29 condition: NUMBER • operator NUMBER
    30          | NUMBER • operator NUMBER ANDOR condition
+   32 operator: • CONDITION
+   33         | • ASSIGN
 
     ASSIGN     shift, and go to state 39
     CONDITION  shift, and go to state 40
@@ -419,6 +462,8 @@ State 33
 State 34
 
    21 where: WHERE condition • semicolon NEWLINE
+   34 semicolon: • SEMICOLON
+   35          | • error
 
     error      shift, and go to state 43
     SEMICOLON  shift, and go to state 25
@@ -435,7 +480,7 @@ State 35
 
 State 36
 
-   16 column: IDENTIFIER ASSIGN TEXT •
+   16 column: IDENTIFIER ASSIGN TEXT •  [error, WHERE, SEMICOLON]
    18       | IDENTIFIER ASSIGN TEXT • COMMA column
 
     COMMA  shift, and go to state 45
@@ -445,7 +490,7 @@ State 36
 
 State 37
 
-   17 column: IDENTIFIER ASSIGN NUMBER •
+   17 column: IDENTIFIER ASSIGN NUMBER •  [error, WHERE, SEMICOLON]
    19       | IDENTIFIER ASSIGN NUMBER • COMMA column
 
     COMMA  shift, and go to state 46
@@ -512,7 +557,12 @@ State 44
 
 State 45
 
-   18 column: IDENTIFIER ASSIGN TEXT COMMA • column
+   16 column: • IDENTIFIER ASSIGN TEXT
+   17       | • IDENTIFIER ASSIGN NUMBER
+   18       | • IDENTIFIER ASSIGN TEXT COMMA column
+   18       | IDENTIFIER ASSIGN TEXT COMMA • column
+   19       | • IDENTIFIER ASSIGN NUMBER COMMA column
+   20       | • error
 
     error       shift, and go to state 20
     IDENTIFIER  shift, and go to state 21
@@ -522,7 +572,12 @@ State 45
 
 State 46
 
-   19 column: IDENTIFIER ASSIGN NUMBER COMMA • column
+   16 column: • IDENTIFIER ASSIGN TEXT
+   17       | • IDENTIFIER ASSIGN NUMBER
+   18       | • IDENTIFIER ASSIGN TEXT COMMA column
+   19       | • IDENTIFIER ASSIGN NUMBER COMMA column
+   19       | IDENTIFIER ASSIGN NUMBER COMMA • column
+   20       | • error
 
     error       shift, and go to state 20
     IDENTIFIER  shift, and go to state 21
@@ -532,7 +587,7 @@ State 46
 
 State 47
 
-   23 condition: IDENTIFIER operator IDENTIFIER •
+   23 condition: IDENTIFIER operator IDENTIFIER •  [error, SEMICOLON]
    26          | IDENTIFIER operator IDENTIFIER • ANDOR condition
 
     ANDOR  shift, and go to state 54
@@ -542,7 +597,7 @@ State 47
 
 State 48
 
-   24 condition: IDENTIFIER operator TEXT •
+   24 condition: IDENTIFIER operator TEXT •  [error, SEMICOLON]
    27          | IDENTIFIER operator TEXT • ANDOR condition
 
     ANDOR  shift, and go to state 55
@@ -552,7 +607,7 @@ State 48
 
 State 49
 
-   25 condition: IDENTIFIER operator NUMBER •
+   25 condition: IDENTIFIER operator NUMBER •  [error, SEMICOLON]
    28          | IDENTIFIER operator NUMBER • ANDOR condition
 
     ANDOR  shift, and go to state 56
@@ -562,7 +617,7 @@ State 49
 
 State 50
 
-   29 condition: NUMBER operator NUMBER •
+   29 condition: NUMBER operator NUMBER •  [error, SEMICOLON]
    30          | NUMBER operator NUMBER • ANDOR condition
 
     ANDOR  shift, and go to state 57
@@ -593,7 +648,16 @@ State 53
 
 State 54
 
-   26 condition: IDENTIFIER operator IDENTIFIER ANDOR • condition
+   23 condition: • IDENTIFIER operator IDENTIFIER
+   24          | • IDENTIFIER operator TEXT
+   25          | • IDENTIFIER operator NUMBER
+   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   26          | IDENTIFIER operator IDENTIFIER ANDOR • condition
+   27          | • IDENTIFIER operator TEXT ANDOR condition
+   28          | • IDENTIFIER operator NUMBER ANDOR condition
+   29          | • NUMBER operator NUMBER
+   30          | • NUMBER operator NUMBER ANDOR condition
+   31          | • error
 
     error       shift, and go to state 31
     IDENTIFIER  shift, and go to state 32
@@ -604,7 +668,16 @@ State 54
 
 State 55
 
-   27 condition: IDENTIFIER operator TEXT ANDOR • condition
+   23 condition: • IDENTIFIER operator IDENTIFIER
+   24          | • IDENTIFIER operator TEXT
+   25          | • IDENTIFIER operator NUMBER
+   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   27          | • IDENTIFIER operator TEXT ANDOR condition
+   27          | IDENTIFIER operator TEXT ANDOR • condition
+   28          | • IDENTIFIER operator NUMBER ANDOR condition
+   29          | • NUMBER operator NUMBER
+   30          | • NUMBER operator NUMBER ANDOR condition
+   31          | • error
 
     error       shift, and go to state 31
     IDENTIFIER  shift, and go to state 32
@@ -615,7 +688,16 @@ State 55
 
 State 56
 
-   28 condition: IDENTIFIER operator NUMBER ANDOR • condition
+   23 condition: • IDENTIFIER operator IDENTIFIER
+   24          | • IDENTIFIER operator TEXT
+   25          | • IDENTIFIER operator NUMBER
+   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   27          | • IDENTIFIER operator TEXT ANDOR condition
+   28          | • IDENTIFIER operator NUMBER ANDOR condition
+   28          | IDENTIFIER operator NUMBER ANDOR • condition
+   29          | • NUMBER operator NUMBER
+   30          | • NUMBER operator NUMBER ANDOR condition
+   31          | • error
 
     error       shift, and go to state 31
     IDENTIFIER  shift, and go to state 32
@@ -626,7 +708,16 @@ State 56
 
 State 57
 
-   30 condition: NUMBER operator NUMBER ANDOR • condition
+   23 condition: • IDENTIFIER operator IDENTIFIER
+   24          | • IDENTIFIER operator TEXT
+   25          | • IDENTIFIER operator NUMBER
+   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   27          | • IDENTIFIER operator TEXT ANDOR condition
+   28          | • IDENTIFIER operator NUMBER ANDOR condition
+   29          | • NUMBER operator NUMBER
+   30          | • NUMBER operator NUMBER ANDOR condition
+   30          | NUMBER operator NUMBER ANDOR • condition
+   31          | • error
 
     error       shift, and go to state 31
     IDENTIFIER  shift, and go to state 32
