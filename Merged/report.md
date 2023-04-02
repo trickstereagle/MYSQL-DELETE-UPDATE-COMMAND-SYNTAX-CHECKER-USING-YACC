@@ -2,6 +2,7 @@
 
 ## MYSQL : DELETE and UPDATE
 ### By Abhishek Gupta (Roll No. 01) & Divyansh Gupta (Roll No. 19)
+### Submitted to Dr. Ankit Rajpal
 
 ## Aim
 The aim of this project is to design a compiler for MySQL language to execute DELETE and UPDATE operations. The compiler will analyze the syntax and generate an executable file. The lexical analyzer will scan the input code and generate tokens that will be used by the parser to create a parse tree. 
