@@ -71,12 +71,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 void yyerror (char *str);
 int yylex();
 
 
-#line 80 "y.tab.c"
+#line 79 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -594,10 +593,10 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    12,    12,    13,    14,    19,    24,    29,    32,    33,
-      34,    39,    41,    42,    47,    48,    49,    54,    55,    56,
-      57,    58,    63,    64,    69,    70,    71,    72,    73,    74,
-      75,    76,    77,    82,    82,    84,    85
+       0,    11,    11,    12,    13,    18,    23,    28,    31,    32,
+      33,    38,    40,    41,    46,    47,    48,    53,    54,    55,
+      56,    57,    62,    63,    68,    69,    70,    71,    72,    73,
+      74,    75,    76,    81,    81,    83,    84
 };
 #endif
 
@@ -1193,97 +1192,97 @@ yyreduce:
   switch (yyn)
     {
   case 4: /* line: error  */
-#line 14 "main.y"
+#line 13 "main.y"
                   {
                 yyerror(" : Invalid Operation. \n               Only DELETE and UPDATE operations are allowed.\n");
                 return 1;
             }
-#line 1202 "y.tab.c"
+#line 1201 "y.tab.c"
     break;
 
   case 5: /* line_up: update  */
-#line 19 "main.y"
+#line 18 "main.y"
                    { 
                 printf("Syntax Correct\n");
                 return 0;
                 }
-#line 1211 "y.tab.c"
+#line 1210 "y.tab.c"
     break;
 
   case 6: /* line_del: delete  */
-#line 24 "main.y"
+#line 23 "main.y"
                    { 
                 printf("Syntax Correct\n");
                 return 0;
                 }
-#line 1220 "y.tab.c"
+#line 1219 "y.tab.c"
     break;
 
   case 10: /* from: error  */
-#line 34 "main.y"
+#line 33 "main.y"
                   { 
                     yyerror(" : MISSING KEYWORD \"FROM\".\n");
                     return 1;
                 }
-#line 1229 "y.tab.c"
+#line 1228 "y.tab.c"
     break;
 
   case 13: /* table: error  */
-#line 42 "main.y"
+#line 41 "main.y"
                           { 
                     yyerror(" : MISSING TABLE NAME.\n");
                     return 1;
                 }
-#line 1238 "y.tab.c"
+#line 1237 "y.tab.c"
     break;
 
   case 16: /* set: error  */
-#line 49 "main.y"
+#line 48 "main.y"
                           { 
                     yyerror(" : MISSING KEYWORD \"SET\".\n");
                     return 1;
                 }
-#line 1247 "y.tab.c"
+#line 1246 "y.tab.c"
     break;
 
   case 21: /* column: error  */
-#line 58 "main.y"
+#line 57 "main.y"
                       { 
                     yyerror(" : Incorrect statement for SET clause\n");
                     return 1;
                 }
-#line 1256 "y.tab.c"
+#line 1255 "y.tab.c"
     break;
 
   case 23: /* where: error  */
-#line 64 "main.y"
+#line 63 "main.y"
                           { 
                     yyerror(" : MISSING CLAUSE \"WHERE\".\n");
                     return 1;
                 }
-#line 1265 "y.tab.c"
+#line 1264 "y.tab.c"
     break;
 
   case 32: /* condition: error  */
-#line 77 "main.y"
+#line 76 "main.y"
                               {
 				    yyerror(" : Incorrect statement for WHERE clause\n");			
 				    return 1;
 			    }
-#line 1274 "y.tab.c"
+#line 1273 "y.tab.c"
     break;
 
   case 36: /* semicolon: error  */
-#line 85 "main.y"
+#line 84 "main.y"
                   {
                     yyerror(" : Missing Semicolon \";\"\n"); 
                     return 1;
                 }
-#line 1283 "y.tab.c"
+#line 1282 "y.tab.c"
     break;
 
 
-#line 1287 "y.tab.c"
+#line 1286 "y.tab.c"
 
       default: break;
     }
@@ -1476,7 +1475,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 90 "main.y"
+#line 89 "main.y"
 
 
 int main() {
