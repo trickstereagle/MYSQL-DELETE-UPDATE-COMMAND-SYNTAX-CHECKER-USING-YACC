@@ -154,7 +154,7 @@ int yywrap() {
 <img src = "grp.svg" style="border: 2px solid black;" title="GOTO Graph">
 
 ## Test Cases
-<img src = "testcases/1.png">
+<img src = "testcases/1.jpg">
 <img src = "testcases/2.png">
 
 ## Limitations
