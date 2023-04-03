@@ -25,7 +25,9 @@ The compiler consists of two components viz. Lexical analyser and Syntax analyse
 (s|S)(e|E)(t|T)                       return SET;      // set case insensitive
 (w|W)(H|h)(e|E)(r|R)(e|E)             return WHERE;     // where case insensitive  
 (A|a)(n|N)(d|D)                       return ANDOR;     // and case insensitive  
-(o|O)(r|R)                            return ANDOR;     // or case insensitive  
+(o|O)(r|R)                            return ANDOR;     // or case insensitive
+(s|S)(e|E)(l|L)(e|E)(c|C)(t|T)        return SELECT;
+(i|I)(n|N)                            return IN;
 [0-9]+                                return NUMBER;
 [\"](.)+[\"]                          return TEXT;
 ['](.)+[']                            return TEXT;
@@ -35,6 +37,8 @@ The compiler consists of two components viz. Lexical analyser and Syntax analyse
 "<="                                  return CONDITION;
 ">="                                  return CONDITION;
 "<>"                                  return CONDITION;
+"("                                   return P_OPEN;
+")"                                   return P_CLOSE;
 "!="                                  return CONDITION;
 [a-zA-Z][a-zA-Z0-9_]*                 return IDENTIFIER;
 ","                                   return COMMA;
@@ -55,6 +59,7 @@ int yylex();
 %}
 
 %token UPDATE DELETE FROM IDENTIFIER SET ASSIGN WHERE ANDOR CONDITION SEMICOLON TEXT NUMBER COMMA NEWLINE ;
+%token IN P_OPEN SELECT P_CLOSE;
 %%
 line:       line_up | 
             line_del |
@@ -73,10 +78,10 @@ line_del:   delete {
                 return 0;
                 }
             ;
-delete:     DELETE from
+delete:     DELETE from 
 	        ;
 
-from:       FROM table where | 
+from:       FROM table where semicolon NEWLINE| 
             FROM table semicolon NEWLINE | 
             error { 
                     yyerror(" : MISSING KEYWORD \"FROM\".\n");
@@ -91,7 +96,7 @@ table:      IDENTIFIER |
                     return 1;
                 }
 		    ; 
-set:        SET column where | 
+set:        SET column where semicolon NEWLINE  | 
 		    SET column semicolon NEWLINE |
 		    error { 
                     yyerror(" : MISSING KEYWORD \"SET\".\n");
@@ -107,12 +112,17 @@ column:     IDENTIFIER ASSIGN TEXT |
                     return 1;
                 }
 		    ;
-where:      WHERE condition semicolon NEWLINE |
+where:      WHERE IDENTIFIER IN subquery | WHERE condition |
 		    error { 
                     yyerror(" : MISSING CLAUSE \"WHERE\".\n");
                     return 1;
                 }
 		    ;
+subquery : P_OPEN SELECT IDENTIFIER FROM IDENTIFIER where P_CLOSE | P_OPEN SELECT IDENTIFIER FROM IDENTIFIER P_CLOSE |
+			error{
+					yyerror(" : Incorrect Subquery\n");
+					return 1;
+			}
 condition:  IDENTIFIER operator IDENTIFIER |
 			IDENTIFIER operator TEXT |
 			IDENTIFIER operator NUMBER |
