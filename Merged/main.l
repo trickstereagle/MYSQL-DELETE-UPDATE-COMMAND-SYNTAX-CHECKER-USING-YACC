@@ -11,7 +11,9 @@
 (s|S)(e|E)(t|T)                       return SET;      // set case insensitive
 (w|W)(H|h)(e|E)(r|R)(e|E)             return WHERE;     // where case insensitive  
 (A|a)(n|N)(d|D)                       return ANDOR;     // and case insensitive  
-(o|O)(r|R)                            return ANDOR;     // or case insensitive  
+(o|O)(r|R)                            return ANDOR;     // or case insensitive
+(s|S)(e|E)(l|L)(e|E)(c|C)(t|T)        return SELECT;
+(i|I)(n|N)                            return IN;
 [0-9]+                                return NUMBER;
 [\"](.)+[\"]                          return TEXT;
 ['](.)+[']                            return TEXT;
@@ -21,6 +23,8 @@
 "<="                                  return CONDITION;
 ">="                                  return CONDITION;
 "<>"                                  return CONDITION;
+"("                                   return P_OPEN;
+")"                                   return P_CLOSE;
 "!="                                  return CONDITION;
 [a-zA-Z][a-zA-Z0-9_]*                 return IDENTIFIER;
 ","                                   return COMMA;
