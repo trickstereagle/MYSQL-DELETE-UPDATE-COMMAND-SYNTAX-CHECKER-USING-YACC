@@ -7,7 +7,7 @@ int yylex();
 %}
 
 %token UPDATE DELETE FROM IDENTIFIER SET ASSIGN WHERE ANDOR CONDITION SEMICOLON TEXT NUMBER COMMA NEWLINE ;
-%token IN P_OPEN SELECT P_CLOSE;
+%token IN P_OPEN SELECT P_CLOSE ALL;
 %%
 line:       line_up | 
             line_del |
@@ -66,11 +66,18 @@ where:      WHERE IDENTIFIER IN subquery | WHERE condition |
                     return 1;
                 }
 		    ;
-subquery : P_OPEN SELECT IDENTIFIER FROM IDENTIFIER where P_CLOSE | P_OPEN SELECT IDENTIFIER FROM IDENTIFIER P_CLOSE |
+subquery :  P_OPEN SELECT col FROM IDENTIFIER where P_CLOSE | P_OPEN SELECT col FROM IDENTIFIER P_CLOSE |
 			error{
 					yyerror(" : Incorrect Subquery\n");
 					return 1;
 			}
+            ;
+col :       ALL | IDENTIFIER | NUMBER |
+            error{
+                    yyerror(" : Incorrect \"SELECT\" statement\n");
+                    return 1;
+            }
+            ; 
 condition:  IDENTIFIER operator IDENTIFIER |
 			IDENTIFIER operator TEXT |
 			IDENTIFIER operator NUMBER |

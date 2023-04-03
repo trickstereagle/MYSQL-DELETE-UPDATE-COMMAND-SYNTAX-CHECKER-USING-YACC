@@ -67,7 +67,12 @@ extern int yydebug;
     TEXT = 268,                    /* TEXT  */
     NUMBER = 269,                  /* NUMBER  */
     COMMA = 270,                   /* COMMA  */
-    NEWLINE = 271                  /* NEWLINE  */
+    NEWLINE = 271,                 /* NEWLINE  */
+    IN = 272,                      /* IN  */
+    P_OPEN = 273,                  /* P_OPEN  */
+    SELECT = 274,                  /* SELECT  */
+    P_CLOSE = 275,                 /* P_CLOSE  */
+    ALL = 276                      /* ALL  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -90,6 +95,11 @@ extern int yydebug;
 #define NUMBER 269
 #define COMMA 270
 #define NEWLINE 271
+#define IN 272
+#define P_OPEN 273
+#define SELECT 274
+#define P_CLOSE 275
+#define ALL 276
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

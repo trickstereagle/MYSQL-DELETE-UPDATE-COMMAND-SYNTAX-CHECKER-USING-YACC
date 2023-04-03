@@ -31,6 +31,7 @@ The compiler consists of two components viz. Lexical analyser and Syntax analyse
 [0-9]+                                return NUMBER;
 [\"](.)+[\"]                          return TEXT;
 ['](.)+[']                            return TEXT;
+"*"                                   return ALL;
 "="                                   return ASSIGN;
 "<"                                   return CONDITION;
 ">"                                   return CONDITION;
@@ -47,6 +48,7 @@ The compiler consists of two components viz. Lexical analyser and Syntax analyse
 [ \t]|" "                                       ;
 .                                     return *yytext;
 %%
+
 ```
 ## YACC code
 ```c
@@ -59,7 +61,7 @@ int yylex();
 %}
 
 %token UPDATE DELETE FROM IDENTIFIER SET ASSIGN WHERE ANDOR CONDITION SEMICOLON TEXT NUMBER COMMA NEWLINE ;
-%token IN P_OPEN SELECT P_CLOSE;
+%token IN P_OPEN SELECT P_CLOSE ALL;
 %%
 line:       line_up | 
             line_del |
@@ -118,11 +120,18 @@ where:      WHERE IDENTIFIER IN subquery | WHERE condition |
                     return 1;
                 }
 		    ;
-subquery : P_OPEN SELECT IDENTIFIER FROM IDENTIFIER where P_CLOSE | P_OPEN SELECT IDENTIFIER FROM IDENTIFIER P_CLOSE |
+subquery :  P_OPEN SELECT col FROM IDENTIFIER where P_CLOSE | P_OPEN SELECT col FROM IDENTIFIER P_CLOSE |
 			error{
 					yyerror(" : Incorrect Subquery\n");
 					return 1;
 			}
+            ;
+col :       ALL | IDENTIFIER | NUMBER |
+            error{
+                    yyerror(" : Incorrect \"SELECT\" statement\n");
+                    return 1;
+            }
+            ; 
 condition:  IDENTIFIER operator IDENTIFIER |
 			IDENTIFIER operator TEXT |
 			IDENTIFIER operator NUMBER |
@@ -167,7 +176,7 @@ int yywrap() {
 <img src = "grp.svg" style="border: 2px solid black;" title="GOTO Graph">
 
 ## Test Cases
-<img src = "testcases/1.jpg">
+<img src = "testcases/1.png">
 <img src = "testcases/2.png">
 
 ## Limitations
@@ -178,10 +187,5 @@ int yywrap() {
 ```
 	Syntax Error : Incorrect statement for WHERE clause
 ```
-2. It does not handle subqueries in condition.
-```sql
-	DELETE FROM class WHERE id IN (SELECT id FROM course);
-```
-```
-	Syntax Error : Incorrect statement for WHERE clause
-```
+
+<h2> ThankYou </h2>

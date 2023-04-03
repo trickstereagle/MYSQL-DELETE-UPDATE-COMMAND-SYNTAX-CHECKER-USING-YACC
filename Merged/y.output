@@ -12,7 +12,7 @@ Grammar
 
     6 delete: DELETE from
 
-    7 from: FROM table where
+    7 from: FROM table where semicolon NEWLINE
     8     | FROM table semicolon NEWLINE
     9     | error
 
@@ -21,7 +21,7 @@ Grammar
    11 table: IDENTIFIER
    12      | error
 
-   13 set: SET column where
+   13 set: SET column where semicolon NEWLINE
    14    | SET column semicolon NEWLINE
    15    | error
 
@@ -31,89 +31,110 @@ Grammar
    19       | IDENTIFIER ASSIGN NUMBER COMMA column
    20       | error
 
-   21 where: WHERE condition semicolon NEWLINE
-   22      | error
+   21 where: WHERE IDENTIFIER IN subquery
+   22      | WHERE condition
+   23      | error
 
-   23 condition: IDENTIFIER operator IDENTIFIER
-   24          | IDENTIFIER operator TEXT
-   25          | IDENTIFIER operator NUMBER
-   26          | IDENTIFIER operator IDENTIFIER ANDOR condition
-   27          | IDENTIFIER operator TEXT ANDOR condition
-   28          | IDENTIFIER operator NUMBER ANDOR condition
-   29          | NUMBER operator NUMBER
-   30          | NUMBER operator NUMBER ANDOR condition
-   31          | error
+   24 subquery: P_OPEN SELECT col FROM IDENTIFIER where P_CLOSE
+   25         | P_OPEN SELECT col FROM IDENTIFIER P_CLOSE
+   26         | error
 
-   32 operator: CONDITION
-   33         | ASSIGN
+   27 col: ALL
+   28    | IDENTIFIER
+   29    | NUMBER
+   30    | error
 
-   34 semicolon: SEMICOLON
-   35          | error
+   31 condition: IDENTIFIER operator IDENTIFIER
+   32          | IDENTIFIER operator TEXT
+   33          | IDENTIFIER operator NUMBER
+   34          | IDENTIFIER operator IDENTIFIER ANDOR condition
+   35          | IDENTIFIER operator TEXT ANDOR condition
+   36          | IDENTIFIER operator NUMBER ANDOR condition
+   37          | NUMBER operator NUMBER
+   38          | NUMBER operator NUMBER ANDOR condition
+   39          | error
+
+   40 operator: CONDITION
+   41         | ASSIGN
+
+   42 semicolon: SEMICOLON
+   43          | error
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    error (256) 3 9 12 15 20 22 31 35
+    error (256) 3 9 12 15 20 23 26 30 39 43
     UPDATE (258) 10
     DELETE (259) 6
-    FROM (260) 7 8
-    IDENTIFIER (261) 11 16 17 18 19 23 24 25 26 27 28
+    FROM (260) 7 8 24 25
+    IDENTIFIER (261) 11 16 17 18 19 21 24 25 28 31 32 33 34 35 36
     SET (262) 13 14
-    ASSIGN (263) 16 17 18 19 33
-    WHERE (264) 21
-    ANDOR (265) 26 27 28 30
-    CONDITION (266) 32
-    SEMICOLON (267) 34
-    TEXT (268) 16 18 24 27
-    NUMBER (269) 17 19 25 28 29 30
+    ASSIGN (263) 16 17 18 19 41
+    WHERE (264) 21 22
+    ANDOR (265) 34 35 36 38
+    CONDITION (266) 40
+    SEMICOLON (267) 42
+    TEXT (268) 16 18 32 35
+    NUMBER (269) 17 19 29 33 36 37 38
     COMMA (270) 18 19
-    NEWLINE (271) 8 14 21
+    NEWLINE (271) 7 8 13 14
+    IN (272) 21
+    P_OPEN (273) 24 25
+    SELECT (274) 24 25
+    P_CLOSE (275) 24 25
+    ALL (276) 27
 
 
 Nonterminals, with rules where they appear
 
-    $accept (17)
+    $accept (22)
         on left: 0
-    line (18)
+    line (23)
         on left: 1 2 3
         on right: 0
-    line_up (19)
+    line_up (24)
         on left: 4
         on right: 1
-    line_del (20)
+    line_del (25)
         on left: 5
         on right: 2
-    delete (21)
+    delete (26)
         on left: 6
         on right: 5
-    from (22)
+    from (27)
         on left: 7 8 9
         on right: 6
-    update (23)
+    update (28)
         on left: 10
         on right: 4
-    table (24)
+    table (29)
         on left: 11 12
         on right: 7 8 10
-    set (25)
+    set (30)
         on left: 13 14 15
         on right: 10
-    column (26)
+    column (31)
         on left: 16 17 18 19 20
         on right: 13 14 18 19
-    where (27)
-        on left: 21 22
-        on right: 7 13
-    condition (28)
-        on left: 23 24 25 26 27 28 29 30 31
-        on right: 21 26 27 28 30
-    operator (29)
-        on left: 32 33
-        on right: 23 24 25 26 27 28 29 30
-    semicolon (30)
-        on left: 34 35
-        on right: 8 14 21
+    where (32)
+        on left: 21 22 23
+        on right: 7 13 24
+    subquery (33)
+        on left: 24 25 26
+        on right: 21
+    col (34)
+        on left: 27 28 29 30
+        on right: 24 25
+    condition (35)
+        on left: 31 32 33 34 35 36 37 38 39
+        on right: 22 34 35 36 38
+    operator (36)
+        on left: 40 41
+        on right: 31 32 33 34 35 36 37 38
+    semicolon (37)
+        on left: 42 43
+        on right: 7 8 13 14
 
 
 State 0
@@ -160,7 +181,7 @@ State 2
 State 3
 
     6 delete: DELETE • from
-    7 from: • FROM table where
+    7 from: • FROM table where semicolon NEWLINE
     8     | • FROM table semicolon NEWLINE
     9     | • error
 
@@ -222,7 +243,7 @@ State 10
 State 11
 
    10 update: UPDATE table • set
-   13 set: • SET column where
+   13 set: • SET column where semicolon NEWLINE
    14    | • SET column semicolon NEWLINE
    15    | • error
 
@@ -241,7 +262,7 @@ State 12
 
 State 13
 
-    7 from: FROM • table where
+    7 from: FROM • table where semicolon NEWLINE
     8     | FROM • table semicolon NEWLINE
    11 table: • IDENTIFIER
    12      | • error
@@ -275,7 +296,7 @@ State 16
 
 State 17
 
-   13 set: SET • column where
+   13 set: SET • column where semicolon NEWLINE
    14    | SET • column semicolon NEWLINE
    16 column: • IDENTIFIER ASSIGN TEXT
    17       | • IDENTIFIER ASSIGN NUMBER
@@ -298,12 +319,13 @@ State 18
 
 State 19
 
-    7 from: FROM table • where
+    7 from: FROM table • where semicolon NEWLINE
     8     | FROM table • semicolon NEWLINE
-   21 where: • WHERE condition semicolon NEWLINE
-   22      | • error
-   34 semicolon: • SEMICOLON
-   35          | • error
+   21 where: • WHERE IDENTIFIER IN subquery
+   22      | • WHERE condition
+   23      | • error
+   42 semicolon: • SEMICOLON
+   43          | • error
 
     error      shift, and go to state 23
     WHERE      shift, and go to state 24
@@ -332,12 +354,13 @@ State 21
 
 State 22
 
-   13 set: SET column • where
+   13 set: SET column • where semicolon NEWLINE
    14    | SET column • semicolon NEWLINE
-   21 where: • WHERE condition semicolon NEWLINE
-   22      | • error
-   34 semicolon: • SEMICOLON
-   35          | • error
+   21 where: • WHERE IDENTIFIER IN subquery
+   22      | • WHERE condition
+   23      | • error
+   42 semicolon: • SEMICOLON
+   43          | • error
 
     error      shift, and go to state 23
     WHERE      shift, and go to state 24
@@ -349,25 +372,26 @@ State 22
 
 State 23
 
-   22 where: error •  [$end]
-   35 semicolon: error •  [NEWLINE]
+   23 where: error •  [error, SEMICOLON]
+   43 semicolon: error •  [NEWLINE]
 
-    NEWLINE   reduce using rule 35 (semicolon)
-    $default  reduce using rule 22 (where)
+    NEWLINE   reduce using rule 43 (semicolon)
+    $default  reduce using rule 23 (where)
 
 
 State 24
 
-   21 where: WHERE • condition semicolon NEWLINE
-   23 condition: • IDENTIFIER operator IDENTIFIER
-   24          | • IDENTIFIER operator TEXT
-   25          | • IDENTIFIER operator NUMBER
-   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
-   27          | • IDENTIFIER operator TEXT ANDOR condition
-   28          | • IDENTIFIER operator NUMBER ANDOR condition
-   29          | • NUMBER operator NUMBER
-   30          | • NUMBER operator NUMBER ANDOR condition
-   31          | • error
+   21 where: WHERE • IDENTIFIER IN subquery
+   22      | WHERE • condition
+   31 condition: • IDENTIFIER operator IDENTIFIER
+   32          | • IDENTIFIER operator TEXT
+   33          | • IDENTIFIER operator NUMBER
+   34          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   35          | • IDENTIFIER operator TEXT ANDOR condition
+   36          | • IDENTIFIER operator NUMBER ANDOR condition
+   37          | • NUMBER operator NUMBER
+   38          | • NUMBER operator NUMBER ANDOR condition
+   39          | • error
 
     error       shift, and go to state 31
     IDENTIFIER  shift, and go to state 32
@@ -378,23 +402,28 @@ State 24
 
 State 25
 
-   34 semicolon: SEMICOLON •
+   42 semicolon: SEMICOLON •
 
-    $default  reduce using rule 34 (semicolon)
+    $default  reduce using rule 42 (semicolon)
 
 
 State 26
 
-    7 from: FROM table where •
+    7 from: FROM table where • semicolon NEWLINE
+   42 semicolon: • SEMICOLON
+   43          | • error
 
-    $default  reduce using rule 7 (from)
+    error      shift, and go to state 35
+    SEMICOLON  shift, and go to state 25
+
+    semicolon  go to state 36
 
 
 State 27
 
     8 from: FROM table semicolon • NEWLINE
 
-    NEWLINE  shift, and go to state 35
+    NEWLINE  shift, and go to state 37
 
 
 State 28
@@ -404,158 +433,187 @@ State 28
    18       | IDENTIFIER ASSIGN • TEXT COMMA column
    19       | IDENTIFIER ASSIGN • NUMBER COMMA column
 
-    TEXT    shift, and go to state 36
-    NUMBER  shift, and go to state 37
+    TEXT    shift, and go to state 38
+    NUMBER  shift, and go to state 39
 
 
 State 29
 
-   13 set: SET column where •
+   13 set: SET column where • semicolon NEWLINE
+   42 semicolon: • SEMICOLON
+   43          | • error
 
-    $default  reduce using rule 13 (set)
+    error      shift, and go to state 35
+    SEMICOLON  shift, and go to state 25
+
+    semicolon  go to state 40
 
 
 State 30
 
    14 set: SET column semicolon • NEWLINE
 
-    NEWLINE  shift, and go to state 38
+    NEWLINE  shift, and go to state 41
 
 
 State 31
 
-   31 condition: error •
+   39 condition: error •
 
-    $default  reduce using rule 31 (condition)
+    $default  reduce using rule 39 (condition)
 
 
 State 32
 
-   23 condition: IDENTIFIER • operator IDENTIFIER
-   24          | IDENTIFIER • operator TEXT
-   25          | IDENTIFIER • operator NUMBER
-   26          | IDENTIFIER • operator IDENTIFIER ANDOR condition
-   27          | IDENTIFIER • operator TEXT ANDOR condition
-   28          | IDENTIFIER • operator NUMBER ANDOR condition
-   32 operator: • CONDITION
-   33         | • ASSIGN
+   21 where: WHERE IDENTIFIER • IN subquery
+   31 condition: IDENTIFIER • operator IDENTIFIER
+   32          | IDENTIFIER • operator TEXT
+   33          | IDENTIFIER • operator NUMBER
+   34          | IDENTIFIER • operator IDENTIFIER ANDOR condition
+   35          | IDENTIFIER • operator TEXT ANDOR condition
+   36          | IDENTIFIER • operator NUMBER ANDOR condition
+   40 operator: • CONDITION
+   41         | • ASSIGN
 
-    ASSIGN     shift, and go to state 39
-    CONDITION  shift, and go to state 40
+    ASSIGN     shift, and go to state 42
+    CONDITION  shift, and go to state 43
+    IN         shift, and go to state 44
 
-    operator  go to state 41
+    operator  go to state 45
 
 
 State 33
 
-   29 condition: NUMBER • operator NUMBER
-   30          | NUMBER • operator NUMBER ANDOR condition
-   32 operator: • CONDITION
-   33         | • ASSIGN
+   37 condition: NUMBER • operator NUMBER
+   38          | NUMBER • operator NUMBER ANDOR condition
+   40 operator: • CONDITION
+   41         | • ASSIGN
 
-    ASSIGN     shift, and go to state 39
-    CONDITION  shift, and go to state 40
+    ASSIGN     shift, and go to state 42
+    CONDITION  shift, and go to state 43
 
-    operator  go to state 42
+    operator  go to state 46
 
 
 State 34
 
-   21 where: WHERE condition • semicolon NEWLINE
-   34 semicolon: • SEMICOLON
-   35          | • error
+   22 where: WHERE condition •
 
-    error      shift, and go to state 43
-    SEMICOLON  shift, and go to state 25
-
-    semicolon  go to state 44
+    $default  reduce using rule 22 (where)
 
 
 State 35
+
+   43 semicolon: error •
+
+    $default  reduce using rule 43 (semicolon)
+
+
+State 36
+
+    7 from: FROM table where semicolon • NEWLINE
+
+    NEWLINE  shift, and go to state 47
+
+
+State 37
 
     8 from: FROM table semicolon NEWLINE •
 
     $default  reduce using rule 8 (from)
 
 
-State 36
+State 38
 
    16 column: IDENTIFIER ASSIGN TEXT •  [error, WHERE, SEMICOLON]
    18       | IDENTIFIER ASSIGN TEXT • COMMA column
 
-    COMMA  shift, and go to state 45
+    COMMA  shift, and go to state 48
 
     $default  reduce using rule 16 (column)
 
 
-State 37
+State 39
 
    17 column: IDENTIFIER ASSIGN NUMBER •  [error, WHERE, SEMICOLON]
    19       | IDENTIFIER ASSIGN NUMBER • COMMA column
 
-    COMMA  shift, and go to state 46
+    COMMA  shift, and go to state 49
 
     $default  reduce using rule 17 (column)
 
 
-State 38
+State 40
+
+   13 set: SET column where semicolon • NEWLINE
+
+    NEWLINE  shift, and go to state 50
+
+
+State 41
 
    14 set: SET column semicolon NEWLINE •
 
     $default  reduce using rule 14 (set)
 
 
-State 39
-
-   33 operator: ASSIGN •
-
-    $default  reduce using rule 33 (operator)
-
-
-State 40
-
-   32 operator: CONDITION •
-
-    $default  reduce using rule 32 (operator)
-
-
-State 41
-
-   23 condition: IDENTIFIER operator • IDENTIFIER
-   24          | IDENTIFIER operator • TEXT
-   25          | IDENTIFIER operator • NUMBER
-   26          | IDENTIFIER operator • IDENTIFIER ANDOR condition
-   27          | IDENTIFIER operator • TEXT ANDOR condition
-   28          | IDENTIFIER operator • NUMBER ANDOR condition
-
-    IDENTIFIER  shift, and go to state 47
-    TEXT        shift, and go to state 48
-    NUMBER      shift, and go to state 49
-
-
 State 42
 
-   29 condition: NUMBER operator • NUMBER
-   30          | NUMBER operator • NUMBER ANDOR condition
+   41 operator: ASSIGN •
 
-    NUMBER  shift, and go to state 50
+    $default  reduce using rule 41 (operator)
 
 
 State 43
 
-   35 semicolon: error •
+   40 operator: CONDITION •
 
-    $default  reduce using rule 35 (semicolon)
+    $default  reduce using rule 40 (operator)
 
 
 State 44
 
-   21 where: WHERE condition semicolon • NEWLINE
+   21 where: WHERE IDENTIFIER IN • subquery
+   24 subquery: • P_OPEN SELECT col FROM IDENTIFIER where P_CLOSE
+   25         | • P_OPEN SELECT col FROM IDENTIFIER P_CLOSE
+   26         | • error
 
-    NEWLINE  shift, and go to state 51
+    error   shift, and go to state 51
+    P_OPEN  shift, and go to state 52
+
+    subquery  go to state 53
 
 
 State 45
+
+   31 condition: IDENTIFIER operator • IDENTIFIER
+   32          | IDENTIFIER operator • TEXT
+   33          | IDENTIFIER operator • NUMBER
+   34          | IDENTIFIER operator • IDENTIFIER ANDOR condition
+   35          | IDENTIFIER operator • TEXT ANDOR condition
+   36          | IDENTIFIER operator • NUMBER ANDOR condition
+
+    IDENTIFIER  shift, and go to state 54
+    TEXT        shift, and go to state 55
+    NUMBER      shift, and go to state 56
+
+
+State 46
+
+   37 condition: NUMBER operator • NUMBER
+   38          | NUMBER operator • NUMBER ANDOR condition
+
+    NUMBER  shift, and go to state 57
+
+
+State 47
+
+    7 from: FROM table where semicolon NEWLINE •
+
+    $default  reduce using rule 7 (from)
+
+
+State 48
 
    16 column: • IDENTIFIER ASSIGN TEXT
    17       | • IDENTIFIER ASSIGN NUMBER
@@ -567,10 +625,10 @@ State 45
     error       shift, and go to state 20
     IDENTIFIER  shift, and go to state 21
 
-    column  go to state 52
+    column  go to state 58
 
 
-State 46
+State 49
 
    16 column: • IDENTIFIER ASSIGN TEXT
    17       | • IDENTIFIER ASSIGN NUMBER
@@ -582,173 +640,316 @@ State 46
     error       shift, and go to state 20
     IDENTIFIER  shift, and go to state 21
 
-    column  go to state 53
-
-
-State 47
-
-   23 condition: IDENTIFIER operator IDENTIFIER •  [error, SEMICOLON]
-   26          | IDENTIFIER operator IDENTIFIER • ANDOR condition
-
-    ANDOR  shift, and go to state 54
-
-    $default  reduce using rule 23 (condition)
-
-
-State 48
-
-   24 condition: IDENTIFIER operator TEXT •  [error, SEMICOLON]
-   27          | IDENTIFIER operator TEXT • ANDOR condition
-
-    ANDOR  shift, and go to state 55
-
-    $default  reduce using rule 24 (condition)
-
-
-State 49
-
-   25 condition: IDENTIFIER operator NUMBER •  [error, SEMICOLON]
-   28          | IDENTIFIER operator NUMBER • ANDOR condition
-
-    ANDOR  shift, and go to state 56
-
-    $default  reduce using rule 25 (condition)
+    column  go to state 59
 
 
 State 50
 
-   29 condition: NUMBER operator NUMBER •  [error, SEMICOLON]
-   30          | NUMBER operator NUMBER • ANDOR condition
+   13 set: SET column where semicolon NEWLINE •
 
-    ANDOR  shift, and go to state 57
-
-    $default  reduce using rule 29 (condition)
+    $default  reduce using rule 13 (set)
 
 
 State 51
 
-   21 where: WHERE condition semicolon NEWLINE •
+   26 subquery: error •
+
+    $default  reduce using rule 26 (subquery)
+
+
+State 52
+
+   24 subquery: P_OPEN • SELECT col FROM IDENTIFIER where P_CLOSE
+   25         | P_OPEN • SELECT col FROM IDENTIFIER P_CLOSE
+
+    SELECT  shift, and go to state 60
+
+
+State 53
+
+   21 where: WHERE IDENTIFIER IN subquery •
 
     $default  reduce using rule 21 (where)
 
 
-State 52
+State 54
+
+   31 condition: IDENTIFIER operator IDENTIFIER •  [error, SEMICOLON, P_CLOSE]
+   34          | IDENTIFIER operator IDENTIFIER • ANDOR condition
+
+    ANDOR  shift, and go to state 61
+
+    $default  reduce using rule 31 (condition)
+
+
+State 55
+
+   32 condition: IDENTIFIER operator TEXT •  [error, SEMICOLON, P_CLOSE]
+   35          | IDENTIFIER operator TEXT • ANDOR condition
+
+    ANDOR  shift, and go to state 62
+
+    $default  reduce using rule 32 (condition)
+
+
+State 56
+
+   33 condition: IDENTIFIER operator NUMBER •  [error, SEMICOLON, P_CLOSE]
+   36          | IDENTIFIER operator NUMBER • ANDOR condition
+
+    ANDOR  shift, and go to state 63
+
+    $default  reduce using rule 33 (condition)
+
+
+State 57
+
+   37 condition: NUMBER operator NUMBER •  [error, SEMICOLON, P_CLOSE]
+   38          | NUMBER operator NUMBER • ANDOR condition
+
+    ANDOR  shift, and go to state 64
+
+    $default  reduce using rule 37 (condition)
+
+
+State 58
 
    18 column: IDENTIFIER ASSIGN TEXT COMMA column •
 
     $default  reduce using rule 18 (column)
 
 
-State 53
+State 59
 
    19 column: IDENTIFIER ASSIGN NUMBER COMMA column •
 
     $default  reduce using rule 19 (column)
 
 
-State 54
-
-   23 condition: • IDENTIFIER operator IDENTIFIER
-   24          | • IDENTIFIER operator TEXT
-   25          | • IDENTIFIER operator NUMBER
-   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
-   26          | IDENTIFIER operator IDENTIFIER ANDOR • condition
-   27          | • IDENTIFIER operator TEXT ANDOR condition
-   28          | • IDENTIFIER operator NUMBER ANDOR condition
-   29          | • NUMBER operator NUMBER
-   30          | • NUMBER operator NUMBER ANDOR condition
-   31          | • error
-
-    error       shift, and go to state 31
-    IDENTIFIER  shift, and go to state 32
-    NUMBER      shift, and go to state 33
-
-    condition  go to state 58
-
-
-State 55
-
-   23 condition: • IDENTIFIER operator IDENTIFIER
-   24          | • IDENTIFIER operator TEXT
-   25          | • IDENTIFIER operator NUMBER
-   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
-   27          | • IDENTIFIER operator TEXT ANDOR condition
-   27          | IDENTIFIER operator TEXT ANDOR • condition
-   28          | • IDENTIFIER operator NUMBER ANDOR condition
-   29          | • NUMBER operator NUMBER
-   30          | • NUMBER operator NUMBER ANDOR condition
-   31          | • error
-
-    error       shift, and go to state 31
-    IDENTIFIER  shift, and go to state 32
-    NUMBER      shift, and go to state 33
-
-    condition  go to state 59
-
-
-State 56
-
-   23 condition: • IDENTIFIER operator IDENTIFIER
-   24          | • IDENTIFIER operator TEXT
-   25          | • IDENTIFIER operator NUMBER
-   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
-   27          | • IDENTIFIER operator TEXT ANDOR condition
-   28          | • IDENTIFIER operator NUMBER ANDOR condition
-   28          | IDENTIFIER operator NUMBER ANDOR • condition
-   29          | • NUMBER operator NUMBER
-   30          | • NUMBER operator NUMBER ANDOR condition
-   31          | • error
-
-    error       shift, and go to state 31
-    IDENTIFIER  shift, and go to state 32
-    NUMBER      shift, and go to state 33
-
-    condition  go to state 60
-
-
-State 57
-
-   23 condition: • IDENTIFIER operator IDENTIFIER
-   24          | • IDENTIFIER operator TEXT
-   25          | • IDENTIFIER operator NUMBER
-   26          | • IDENTIFIER operator IDENTIFIER ANDOR condition
-   27          | • IDENTIFIER operator TEXT ANDOR condition
-   28          | • IDENTIFIER operator NUMBER ANDOR condition
-   29          | • NUMBER operator NUMBER
-   30          | • NUMBER operator NUMBER ANDOR condition
-   30          | NUMBER operator NUMBER ANDOR • condition
-   31          | • error
-
-    error       shift, and go to state 31
-    IDENTIFIER  shift, and go to state 32
-    NUMBER      shift, and go to state 33
-
-    condition  go to state 61
-
-
-State 58
-
-   26 condition: IDENTIFIER operator IDENTIFIER ANDOR condition •
-
-    $default  reduce using rule 26 (condition)
-
-
-State 59
-
-   27 condition: IDENTIFIER operator TEXT ANDOR condition •
-
-    $default  reduce using rule 27 (condition)
-
-
 State 60
 
-   28 condition: IDENTIFIER operator NUMBER ANDOR condition •
+   24 subquery: P_OPEN SELECT • col FROM IDENTIFIER where P_CLOSE
+   25         | P_OPEN SELECT • col FROM IDENTIFIER P_CLOSE
+   27 col: • ALL
+   28    | • IDENTIFIER
+   29    | • NUMBER
+   30    | • error
 
-    $default  reduce using rule 28 (condition)
+    error       shift, and go to state 65
+    IDENTIFIER  shift, and go to state 66
+    NUMBER      shift, and go to state 67
+    ALL         shift, and go to state 68
+
+    col  go to state 69
 
 
 State 61
 
-   30 condition: NUMBER operator NUMBER ANDOR condition •
+   31 condition: • IDENTIFIER operator IDENTIFIER
+   32          | • IDENTIFIER operator TEXT
+   33          | • IDENTIFIER operator NUMBER
+   34          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   34          | IDENTIFIER operator IDENTIFIER ANDOR • condition
+   35          | • IDENTIFIER operator TEXT ANDOR condition
+   36          | • IDENTIFIER operator NUMBER ANDOR condition
+   37          | • NUMBER operator NUMBER
+   38          | • NUMBER operator NUMBER ANDOR condition
+   39          | • error
 
-    $default  reduce using rule 30 (condition)
+    error       shift, and go to state 31
+    IDENTIFIER  shift, and go to state 70
+    NUMBER      shift, and go to state 33
+
+    condition  go to state 71
+
+
+State 62
+
+   31 condition: • IDENTIFIER operator IDENTIFIER
+   32          | • IDENTIFIER operator TEXT
+   33          | • IDENTIFIER operator NUMBER
+   34          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   35          | • IDENTIFIER operator TEXT ANDOR condition
+   35          | IDENTIFIER operator TEXT ANDOR • condition
+   36          | • IDENTIFIER operator NUMBER ANDOR condition
+   37          | • NUMBER operator NUMBER
+   38          | • NUMBER operator NUMBER ANDOR condition
+   39          | • error
+
+    error       shift, and go to state 31
+    IDENTIFIER  shift, and go to state 70
+    NUMBER      shift, and go to state 33
+
+    condition  go to state 72
+
+
+State 63
+
+   31 condition: • IDENTIFIER operator IDENTIFIER
+   32          | • IDENTIFIER operator TEXT
+   33          | • IDENTIFIER operator NUMBER
+   34          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   35          | • IDENTIFIER operator TEXT ANDOR condition
+   36          | • IDENTIFIER operator NUMBER ANDOR condition
+   36          | IDENTIFIER operator NUMBER ANDOR • condition
+   37          | • NUMBER operator NUMBER
+   38          | • NUMBER operator NUMBER ANDOR condition
+   39          | • error
+
+    error       shift, and go to state 31
+    IDENTIFIER  shift, and go to state 70
+    NUMBER      shift, and go to state 33
+
+    condition  go to state 73
+
+
+State 64
+
+   31 condition: • IDENTIFIER operator IDENTIFIER
+   32          | • IDENTIFIER operator TEXT
+   33          | • IDENTIFIER operator NUMBER
+   34          | • IDENTIFIER operator IDENTIFIER ANDOR condition
+   35          | • IDENTIFIER operator TEXT ANDOR condition
+   36          | • IDENTIFIER operator NUMBER ANDOR condition
+   37          | • NUMBER operator NUMBER
+   38          | • NUMBER operator NUMBER ANDOR condition
+   38          | NUMBER operator NUMBER ANDOR • condition
+   39          | • error
+
+    error       shift, and go to state 31
+    IDENTIFIER  shift, and go to state 70
+    NUMBER      shift, and go to state 33
+
+    condition  go to state 74
+
+
+State 65
+
+   30 col: error •
+
+    $default  reduce using rule 30 (col)
+
+
+State 66
+
+   28 col: IDENTIFIER •
+
+    $default  reduce using rule 28 (col)
+
+
+State 67
+
+   29 col: NUMBER •
+
+    $default  reduce using rule 29 (col)
+
+
+State 68
+
+   27 col: ALL •
+
+    $default  reduce using rule 27 (col)
+
+
+State 69
+
+   24 subquery: P_OPEN SELECT col • FROM IDENTIFIER where P_CLOSE
+   25         | P_OPEN SELECT col • FROM IDENTIFIER P_CLOSE
+
+    FROM  shift, and go to state 75
+
+
+State 70
+
+   31 condition: IDENTIFIER • operator IDENTIFIER
+   32          | IDENTIFIER • operator TEXT
+   33          | IDENTIFIER • operator NUMBER
+   34          | IDENTIFIER • operator IDENTIFIER ANDOR condition
+   35          | IDENTIFIER • operator TEXT ANDOR condition
+   36          | IDENTIFIER • operator NUMBER ANDOR condition
+   40 operator: • CONDITION
+   41         | • ASSIGN
+
+    ASSIGN     shift, and go to state 42
+    CONDITION  shift, and go to state 43
+
+    operator  go to state 45
+
+
+State 71
+
+   34 condition: IDENTIFIER operator IDENTIFIER ANDOR condition •
+
+    $default  reduce using rule 34 (condition)
+
+
+State 72
+
+   35 condition: IDENTIFIER operator TEXT ANDOR condition •
+
+    $default  reduce using rule 35 (condition)
+
+
+State 73
+
+   36 condition: IDENTIFIER operator NUMBER ANDOR condition •
+
+    $default  reduce using rule 36 (condition)
+
+
+State 74
+
+   38 condition: NUMBER operator NUMBER ANDOR condition •
+
+    $default  reduce using rule 38 (condition)
+
+
+State 75
+
+   24 subquery: P_OPEN SELECT col FROM • IDENTIFIER where P_CLOSE
+   25         | P_OPEN SELECT col FROM • IDENTIFIER P_CLOSE
+
+    IDENTIFIER  shift, and go to state 76
+
+
+State 76
+
+   21 where: • WHERE IDENTIFIER IN subquery
+   22      | • WHERE condition
+   23      | • error
+   24 subquery: P_OPEN SELECT col FROM IDENTIFIER • where P_CLOSE
+   25         | P_OPEN SELECT col FROM IDENTIFIER • P_CLOSE
+
+    error    shift, and go to state 77
+    WHERE    shift, and go to state 24
+    P_CLOSE  shift, and go to state 78
+
+    where  go to state 79
+
+
+State 77
+
+   23 where: error •
+
+    $default  reduce using rule 23 (where)
+
+
+State 78
+
+   25 subquery: P_OPEN SELECT col FROM IDENTIFIER P_CLOSE •
+
+    $default  reduce using rule 25 (subquery)
+
+
+State 79
+
+   24 subquery: P_OPEN SELECT col FROM IDENTIFIER where • P_CLOSE
+
+    P_CLOSE  shift, and go to state 80
+
+
+State 80
+
+   24 subquery: P_OPEN SELECT col FROM IDENTIFIER where P_CLOSE •
+
+    $default  reduce using rule 24 (subquery)
