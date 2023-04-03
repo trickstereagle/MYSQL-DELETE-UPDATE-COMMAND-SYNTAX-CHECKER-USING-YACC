@@ -7,6 +7,7 @@ int yylex();
 %}
 
 %token UPDATE DELETE FROM IDENTIFIER SET ASSIGN WHERE ANDOR CONDITION SEMICOLON TEXT NUMBER COMMA NEWLINE ;
+%token IN P_OPEN SELECT P_CLOSE;
 %%
 line:       line_up | 
             line_del |
@@ -25,10 +26,10 @@ line_del:   delete {
                 return 0;
                 }
             ;
-delete:     DELETE from
+delete:     DELETE from 
 	        ;
 
-from:       FROM table where | 
+from:       FROM table where semicolon NEWLINE| 
             FROM table semicolon NEWLINE | 
             error { 
                     yyerror(" : MISSING KEYWORD \"FROM\".\n");
@@ -43,7 +44,7 @@ table:      IDENTIFIER |
                     return 1;
                 }
 		    ; 
-set:        SET column where | 
+set:        SET column where semicolon NEWLINE  | 
 		    SET column semicolon NEWLINE |
 		    error { 
                     yyerror(" : MISSING KEYWORD \"SET\".\n");
@@ -59,12 +60,17 @@ column:     IDENTIFIER ASSIGN TEXT |
                     return 1;
                 }
 		    ;
-where:      WHERE condition semicolon NEWLINE |
+where:      WHERE IDENTIFIER IN subquery | WHERE condition |
 		    error { 
                     yyerror(" : MISSING CLAUSE \"WHERE\".\n");
                     return 1;
                 }
 		    ;
+subquery : P_OPEN SELECT IDENTIFIER FROM IDENTIFIER where P_CLOSE | P_OPEN SELECT IDENTIFIER FROM IDENTIFIER P_CLOSE |
+			error{
+					yyerror(" : Incorrect Subquery\n");
+					return 1;
+			}
 condition:  IDENTIFIER operator IDENTIFIER |
 			IDENTIFIER operator TEXT |
 			IDENTIFIER operator NUMBER |
