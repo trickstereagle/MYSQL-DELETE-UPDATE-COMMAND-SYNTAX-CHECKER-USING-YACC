@@ -5,7 +5,10 @@
 ### Submitted to : Dr. Ankit Rajpal
 
 ## Aim
-The aim of this project is to design a compiler for MySQL language to execute DELETE and UPDATE operations. The compiler will analyze the syntax and generate an executable file. The lexical analyzer will scan the input code and generate tokens that will be used by the parser to create a parse tree. 
+The objective  is to design a compiler for MySQL language to check the syntax of DELETE and UPDATE operations.
+
+## Description
+The compiler consists of two components viz. Lexical analyser and Syntax analyser. <br>Lexical analyzer will scan the input code and generate tokens that will be consumed by the syntax analyser to create a parse tree. 
 
 ## Lex Code:
 ``` c
