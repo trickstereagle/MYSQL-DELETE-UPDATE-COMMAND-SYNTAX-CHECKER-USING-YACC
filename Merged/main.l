@@ -17,6 +17,7 @@
 [0-9]+                                return NUMBER;
 [\"](.)+[\"]                          return TEXT;
 ['](.)+[']                            return TEXT;
+"*"                                   return ALL;
 "="                                   return ASSIGN;
 "<"                                   return CONDITION;
 ">"                                   return CONDITION;
