@@ -4,11 +4,10 @@
 ### By Abhishek Gupta (Roll No. 01) & Divyansh Gupta (Roll No. 19)
 ### Submitted to : Dr. Ankit Rajpal
 
-## Aim
-The objective  is to design a compiler for MySQL language to check the syntax of DELETE and UPDATE operations.
 
-## Description
-The compiler consists of two components viz. Lexical analyser and Syntax analyser. <br>Lexical analyzer will scan the input code and generate tokens that will be consumed by the syntax analyser to create a parse tree. 
+## AIM
+The objective is to design a compiler for MySQL language to check the syntax of DELETE and UPDATE operations. The compiler consists of two components viz. Lexical analyser and Syntax analyser. Lexical analyzer will scan the input code and generate tokens that will be consumed by the syntax analyser to create a parse tree.
+
 
 ## Lex Code:
 ``` c
@@ -187,5 +186,5 @@ int yywrap() {
 ```
 	Syntax Error : Incorrect statement for WHERE clause
 ```
-
+2. Semicolon is mandatory at the end of the query.  
 <h2> ThankYou </h2>
