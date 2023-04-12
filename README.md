@@ -1,9 +1,6 @@
 <h1 style="text-align: center;"> 
-MYSQL-DELETE-UPDATE-COMMAND-SYNTAX-CHECKER-USING-YACC 
+MYSQL : DELETE & UPDATE command syntax checker using LEX & YACC 
 </h1>
-<br>
-<h2 style = "text-align : center;"> MYSQL : DELETE and UPDATE </h2>
-<br>
 <h3 style="text-align: center;"> By <br> Abhishek Gupta (Roll No. 01) <br> Divyansh Gupta (Roll No. 19) </h3>
 <h3 style="text-align: right;"> Submitted to : Dr. Ankit Rajpal </h3>
 
