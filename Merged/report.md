@@ -1,15 +1,17 @@
-# Compiler Design Project
+<h1 style="text-align: center;"> Compiler Design Project </h1>
+<br>
+<h2 style = "text-align : center;"> MYSQL : DELETE and UPDATE </h2>
+<br>
+<h3 style="text-align: center;"> By <br> Abhishek Gupta (Roll No. 01) <br> Divyansh Gupta (Roll No. 19) </h3>
+<h3 style="text-align: right;"> Submitted to : Dr. Ankit Rajpal </h3>
 
-## MYSQL : DELETE and UPDATE
-### By Abhishek Gupta (Roll No. 01) & Divyansh Gupta (Roll No. 19)
-### Submitted to : Dr. Ankit Rajpal
+<div>
+<h2>AIM : </h2>
+The objective is to design a compiler for MySQL language to check the syntax of DELETE and UPDATE operations. The compiler consists of two components viz. Lexical analyser and Syntax analyser. Lexical analyzer will scan the input code and generate tokens that will be consumed by the syntax analyser to create a parse tree.</div>
 
 
-## AIM
-The objective is to design a compiler for MySQL language to check the syntax of DELETE and UPDATE operations. The compiler consists of two components viz. Lexical analyser and Syntax analyser. Lexical analyzer will scan the input code and generate tokens that will be consumed by the syntax analyser to create a parse tree.
+## Lex Code : 
 
-
-## Lex Code:
 ``` c
 %{
 #include <stdio.h>
@@ -27,9 +29,9 @@ The objective is to design a compiler for MySQL language to check the syntax of 
 (o|O)(r|R)                            return ANDOR;     // or case insensitive
 (s|S)(e|E)(l|L)(e|E)(c|C)(t|T)        return SELECT;
 (i|I)(n|N)                            return IN;
-[0-9]+                                return NUMBER;
+[-+]?[0-9]+[.]?[0-9]*                 return NUMBER;
 [\"](.)+[\"]                          return TEXT;
-['](.)+[']                            return TEXT;
+[\'](.)+[\']                          return TEXT;
 "*"                                   return ALL;
 "="                                   return ASSIGN;
 "<"                                   return CONDITION;
@@ -48,8 +50,14 @@ The objective is to design a compiler for MySQL language to check the syntax of 
 .                                     return *yytext;
 %%
 
+
 ```
-## YACC code
+
+
+<br>
+
+## YACC code : 
+
 ```c
 %{
 #include <stdio.h>
@@ -170,15 +178,24 @@ int yywrap() {
 	return 1;
 }
 ```
-## GOTO graph
 
-<img src = "grp.svg" style="border: 2px solid black;" title="GOTO Graph">
+## GOTO graph : 
 
-## Test Cases
-<img src = "testcases/1.png">
-<img src = "testcases/2.png">
 
-## Limitations
+![[grp.svg]]
+
+## Test Cases : 
+
+![[1.png]]
+
+
+![[2.png]]
+
+
+
+## Limitations : 
+<br>
+
 1. It does not handle conditions in parenthesis.
 ```sql
 	DELETE FROM class WHERE (name = "XYZ");
@@ -187,4 +204,5 @@ int yywrap() {
 	Syntax Error : Incorrect statement for WHERE clause
 ```
 2. Semicolon is mandatory at the end of the query.  
-<h2> ThankYou </h2>
+
+<br><br><h1 style = "text-align: center;"> ThankYou </h2>
