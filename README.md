@@ -182,15 +182,12 @@ int yywrap() {
 ## GOTO graph : 
 
 
-![[grp.svg]]
+<img src="grp.svg">
 
 ## Test Cases : 
 
-![[1.png]]
-
-
-![[2.png]]
-
+<img src="testcases/1.png">
+<img src="testcases/2.png">
 
 
 ## Limitations : 
