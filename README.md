@@ -1,4 +1,6 @@
-<h1 style="text-align: center;"> Compiler Design Project </h1>
+<h1 style="text-align: center;"> 
+MYSQL-DELETE-UPDATE-COMMAND-SYNTAX-CHECKER-USING-YACC 
+</h1>
 <br>
 <h2 style = "text-align : center;"> MYSQL : DELETE and UPDATE </h2>
 <br>
