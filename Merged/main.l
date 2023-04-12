@@ -14,7 +14,7 @@
 (o|O)(r|R)                            return ANDOR;     // or case insensitive
 (s|S)(e|E)(l|L)(e|E)(c|C)(t|T)        return SELECT;
 (i|I)(n|N)                            return IN;
-[0-9]+                                return NUMBER;
+[-+]?[0-9]+[.]?[0-9]*                  return NUMBER;
 [\"](.)+[\"]                          return TEXT;
 ['](.)+[']                            return TEXT;
 "*"                                   return ALL;
